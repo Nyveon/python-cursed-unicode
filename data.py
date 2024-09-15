@@ -3,7 +3,7 @@ import json
 import unicodedata
 from collections import deque, defaultdict
 
-from composites import RsetSL, Rsum, RrevIN, REsetSL, REEsetSL, REEEsetSL
+from composites import RsetSL, Rsum, RrevIN, REsetSL, REEsetSL, REEEsetSL, BSL
 
 start_time = time.time()
 
@@ -14,7 +14,8 @@ operations = {
     2: RrevIN,
     3: REsetSL,
     4: REEsetSL,
-    5: REEEsetSL
+    5: REEEsetSL,
+    6: BSL,
 }
 
 #
@@ -164,7 +165,8 @@ result_dict = {
         ikTranslator[key]: value for key, value in candidates.items()
     },
     "operations": {
-        key: [v.__name__ for v in value.functions] for key, value in operations.items()
+        key: [v.__name__ for v in value.functions]
+        for key, value in operations.items()
     },
     "paths": [],
 }
@@ -202,7 +204,7 @@ def output_json():
             running = False
         else:
             run_flag = True
-        
+
         if run_flag:
             if not running:
                 result_dict["paths"].append(1)
@@ -211,9 +213,11 @@ def output_json():
                 result_dict["paths"][-1] += 1
 
     with open("output.json", mode="w", encoding="utf-8") as f:
-        json.dump(result_dict, f, separators=(',', ':'))
+        json.dump(result_dict, f, separators=(",", ":"))
+
 
 output_json()
+
 
 def output_counter():
     counter = {key: 0 for key in operations}
@@ -228,6 +232,7 @@ def output_counter():
                 counter[x] += 1
 
     print(counter)
+
 
 output_counter()
 

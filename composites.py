@@ -176,6 +176,13 @@ class REEEsetSL(REsetSL):
         return total_length
 
 
+class BSL(Composite):
+    functions = (bytearray, str, len)
+
+    @staticmethod
+    def simulate(N):
+        return N * 4 + 14
+
 
 def test_accuracy(composite, values):
     for N in values:
@@ -192,3 +199,4 @@ if __name__ == "__main__":
     test_accuracy(REsetSL, list(range(10000)))
     test_accuracy(REEsetSL, list(range(10000)))
     test_accuracy(REEEsetSL, list(range(10000)))
+    test_accuracy(BSL, list(range(10000)))
