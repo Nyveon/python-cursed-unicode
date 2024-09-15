@@ -17,7 +17,7 @@ operations = {
 possible_values = set()
 operation_paths = {}
 
-max_value = 129782
+max_value = 1_114_111
 max_depth = 24 # 24 is good
 
 visited = {}
@@ -191,3 +191,5 @@ for v in sorted(possible_values):
 
 with open("output.json", mode="w", encoding="utf-8") as f:
     json.dump(result_dict, f)
+
+print("Time taken: ", time.time() - start_time)

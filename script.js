@@ -32,8 +32,6 @@ function lookupUnicode(character) {
     const inner = unicodeData["initialKeys"][opcodes[0]];
     let result = inner;
 
-    console.log("hi1")
-
     for (let i = 1; i < opcodes.length; i++) {
         const oplist = unicodeData["operations"][opcodes[i]];
         for (let j = 0; j < oplist.length; j++) {
@@ -42,12 +40,6 @@ function lookupUnicode(character) {
     }
 
     result = `chr(${result})`
-
-    console.log("hi")
-
-    console.log(inner)
-	console.log(character.charCodeAt(0));
-	console.log(result);
 	return result ? result : "Generation script not found.";
 }
 
