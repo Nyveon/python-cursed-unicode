@@ -15,12 +15,15 @@ async function loadJSON() {
 		const json = await response.json();
 
         const paths = {};
+        const splitPaths = json["paths"].split(',');
         let index = 0;
 
-        for (let i = 0; i < json["paths"].length; i++) {
-            const value = json["paths"][i];
-            if (typeof value === "number") {
-                index += value;
+        // 
+        for (let i = 0; i < splitPaths.length; i++) {
+            const value = splitPaths[i];
+            // console.log(value, index, parseInt(value));
+            if (!isNaN(parseInt(value))) {
+                index += parseInt(value);
             } else {
                 paths[index.toString()] = value;
                 index += 1;

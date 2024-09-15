@@ -148,7 +148,7 @@ while queue:
         new_path_length = path_length + operation_lengths[ops]
         queue.append((new_value, depth - 1, new_path, new_path_length))
 
-keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+keys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 if len(keys) < len(candidates.keys()):
     print("Not enough keys!")
@@ -172,22 +172,6 @@ result_dict = {
 }
 
 
-def path_to_binary(path):
-    if not path:
-        return ""
-
-    possible_values = operations.keys()
-    base = len(possible_values)
-    bnumber = int(path, base)
-
-    binary_representation = bin(bnumber)[2:]
-
-    # back to base 10
-    bnumber = str(int(binary_representation, 2))
-
-    return bnumber
-
-
 def output_json():
     running = False
     run_flag = False
@@ -196,7 +180,6 @@ def output_json():
 
         if i in operation_paths and unicodedata.name(chr(int(i)), False):
             final_path = ikTranslator[operation_paths[i][0]]
-            # final_path += path_to_binary("".join([str(x) for x in operation_paths[i][1:]]))
             final_path += "".join([str(x) for x in operation_paths[i][1:]])
             result_dict["paths"].append(final_path)
 
@@ -211,6 +194,9 @@ def output_json():
                 running = True
             else:
                 result_dict["paths"][-1] += 1
+
+    # Compression run
+    result_dict["paths"] = ",".join([str(x) for x in result_dict["paths"]])
 
     with open("output.json", mode="w", encoding="utf-8") as f:
         json.dump(result_dict, f, separators=(",", ":"))
