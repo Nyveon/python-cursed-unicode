@@ -23,7 +23,7 @@ div.code {
     align-items: center;
     margin: 10px;
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid rgb(125, 125, 125);
     border-radius: 5px;
     background-color: #f0f0f0;
 
@@ -35,6 +35,15 @@ div.code {
     overflow-wrap: break-word;
 
     max-width: 80vw;
+}
+
+/* dark theme */
+@media (prefers-color-scheme: dark) {
+    div.code {
+        background-color: #333;
+        color: #fff;
+        border-color: var(--preformatted)
+    }
 }
 
 .flex-row {
