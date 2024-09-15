@@ -1,11 +1,9 @@
 import time
 import json
-import random
 import unicodedata
-import math
 from collections import deque, defaultdict
 
-from composites import RsetSL, Rsum, RrevIN
+from composites import RsetSL, Rsum, RrevIN, REsetSL
 
 start_time = time.time()
 
@@ -14,8 +12,8 @@ operations = {
     0: RsetSL,
     1: Rsum,
     2: RrevIN,
-    # 3: (str, len), # not used
-    # 4: (range, enumerate, set, str, len),
+    3: REsetSL
+    # (str, len), # not used
 }
 
 operation_lengths = {}
@@ -146,7 +144,6 @@ while queue:
         new_path_length = path_length + operation_lengths[ops]
         queue.append((new_value, depth - 1, new_path, new_path_length))
 
-
 keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 
 if len(keys) < len(candidates.keys()):
@@ -169,20 +166,24 @@ result_dict = {
     "paths": {},
 }
 
-# for v in sorted(possible_values):
-#     char = chr(int(v))
-#     if unicodedata.name(char, False):
-#         final_path = ikTranslator[operation_paths[v][0]]
-#         final_path += "".join([str(x) for x in operation_paths[v][1:]])
-#         result_dict["paths"][v] = final_path
+
+def output_json():
+    for v in sorted(possible_values):
+        char = chr(int(v))
+        if unicodedata.name(char, False):
+            final_path = ikTranslator[operation_paths[v][0]]
+            final_path += "".join([str(x) for x in operation_paths[v][1:]])
+            result_dict["paths"][v] = final_path
 
 
-# with open("output.json", mode="w", encoding="utf-8") as f:
-#     json.dump(result_dict, f)
+    with open("output.json", mode="w", encoding="utf-8") as f:
+        json.dump(result_dict, f)
 
-counter = {0: 0, 1: 0, 2: 0, 3: 0}
+output_json()
 
-with open("testoutput.txt", mode="w", encoding="utf-8") as f:
+def output_counter():
+    counter = {key: 0 for key in operations}
+
     for v in sorted(possible_values):
         if v > max_value:
             continue
@@ -192,7 +193,8 @@ with open("testoutput.txt", mode="w", encoding="utf-8") as f:
             for x in operation_paths[v][1:]:
                 counter[x] += 1
 
-print(counter)
+    print(counter)
 
+output_counter()
 
 print("Time taken: ", time.time() - start_time)
