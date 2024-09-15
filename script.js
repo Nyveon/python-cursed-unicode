@@ -14,6 +14,21 @@ async function loadJSON() {
 
 		const json = await response.json();
 
+        const paths = {};
+        let index = 0;
+
+        for (let i = 0; i < json["paths"].length; i++) {
+            const value = json["paths"][i];
+            if (typeof value === "number") {
+                index += value;
+            } else {
+                paths[index.toString()] = value;
+                index += 1;
+            }
+        }
+
+        json["paths"] = paths;
+
 		unicodeData = json;
 	} catch (error) {
 		document.getElementById("result").textContent =

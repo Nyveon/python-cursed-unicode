@@ -164,17 +164,38 @@ result_dict = {
     "operations": {
         key: [v.__name__ for v in value.functions] for key, value in operations.items()
     },
-    "paths": {},
+    "paths": [],
 }
 
 
 def output_json():
-    for v in sorted(possible_values):
-        char = chr(int(v))
-        if unicodedata.name(char, False):
-            final_path = ikTranslator[operation_paths[v][0]]
-            final_path += "".join([str(x) for x in operation_paths[v][1:]])
-            result_dict["paths"][v] = final_path
+    # for v in sorted(possible_values):
+    #     char = chr(int(v))
+    #     if unicodedata.name(char, False):
+    #         final_path = ikTranslator[operation_paths[v][0]]
+    #         final_path += "".join([str(x) for x in operation_paths[v][1:]])
+    #         result_dict["paths"][v] = final_path
+    running = False
+    run_flag = False
+
+    for i in range(max_value):
+
+        if i in operation_paths and unicodedata.name(chr(int(i)), False):
+            final_path = ikTranslator[operation_paths[i][0]]
+            final_path += "".join([str(x) for x in operation_paths[i][1:]])
+            result_dict["paths"].append(final_path)
+            run_flag = False
+            running = False
+        else:
+            run_flag = True
+        
+        if run_flag:
+            if not running:
+                result_dict["paths"].append(1)
+                running = True
+            else:
+                result_dict["paths"][-1] += 1
+
 
 
     with open("output.json", mode="w", encoding="utf-8") as f:
