@@ -254,7 +254,6 @@ def output_json():
     run_flag = False
 
     for i in range(max_value):
-
         if i in operation_paths and unicodedata.name(chr(int(i)), False):
             final_path = ikTranslator[operation_paths[i][0]]
             final_path += "".join([str(x) for x in operation_paths[i][1:]])
@@ -292,7 +291,7 @@ def output_json():
                 bc = left + right
                 binarypath += charmap[bc]
             
-            if len(binarypath) % 2 != 0:
+            if len(path) % 2 == 0:
                 left = semicharmap[int(path[-1])]
                 bc = left + "111"
                 binarypath += charmap[bc]
