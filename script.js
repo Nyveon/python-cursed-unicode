@@ -24,8 +24,28 @@ async function loadJSON() {
 loadJSON();
 
 function lookupUnicode(character) {
-	console.log(character);
-	const result = unicodeData[character.codePointAt(0)].toString();
+	const opcodes = unicodeData["paths"][character.codePointAt(0)];
+    if (!opcodes) {
+        return "Character not found.";
+    }
+
+    const inner = unicodeData["initialKeys"][opcodes[0]];
+    let result = inner;
+
+    console.log("hi1")
+
+    for (let i = 1; i < opcodes.length; i++) {
+        const oplist = unicodeData["operations"][opcodes[i]];
+        for (let j = 0; j < oplist.length; j++) {
+            result = `${oplist[j]}(${result})`
+        }
+    }
+
+    result = `chr(${result})`
+
+    console.log("hi")
+
+    console.log(inner)
 	console.log(character.charCodeAt(0));
 	console.log(result);
 	return result ? result : "Generation script not found.";

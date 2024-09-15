@@ -5,18 +5,20 @@ from collections import deque
 
 start_time = time.time()
 
-operations = [
-    (range, set, str, len),
-    (range, sum),
-    (range, reversed, iter, next),
-    # (range, enumerate, set, str, len),
-]
+
+operations = {
+    0: (range, set, str, len),
+    1: (range, sum),
+    2: (range, reversed, iter, next),
+    # 3: (range, enumerate, set, str, len),
+}
+
 
 possible_values = set()
 operation_paths = {}
 
 max_value = 129782
-max_depth = 8 # 24 is good
+max_depth = 24 # 24 is good
 
 visited = {}
 
@@ -123,8 +125,6 @@ for k, v in candidates.items():
     candidates[k] = v[0]
 
 for i in candidates.keys():
-    if i == 44:
-        continue
     queue.append((i, max_depth, [i]))
 
 while queue:
@@ -148,39 +148,45 @@ while queue:
 
         if ops == 0:
             new_value = calculate_list_string_length(new_value)
-            for op in operations[ops]:
-                new_path.append(op.__name__)
+            new_path.append(ops)
+            # for op in operations[ops]:
+            #     new_path.append(op.__name__)
         elif ops == 1:
             new_value = calculate_range_sum(new_value)
-            for op in operations[ops]:
-                new_path.append(op.__name__)
+            new_path.append(ops)
+            # for op in operations[ops]:
+            #     new_path.append(op.__name__)
         elif ops == 2:
             if new_value == 0:
                 continue
 
             new_value = new_value - 1
-            for op in operations[ops]:
-                new_path.append(op.__name__)
+            new_path.append(ops)
+            # for op in operations[ops]:
+            #     new_path.append(op.__name__)
         else:
             print("here")
             for op in operations[ops]:
                 try:
                     new_value = op(new_value)
-                    new_path.append(op.__name__)
+                    # new_path.append(op.__name__)
                 except Exception as e:
                     print(e)
                     break
+            new_path.append(ops)
 
         queue.append((new_value, depth - 1, new_path))
 
 result_dict = {
+    "initialKeys": candidates,
+    "operations": {key: [v.__name__ for v in value] for key, value in operations.items()},
     "paths": {}
 }
 
 for v in sorted(possible_values):
     char = chr(int(v))
     if unicodedata.name(char, False):
-        result_dict["paths"][v] = operation_paths[v]
+        result_dict["paths"][v] = [str(x) for x in operation_paths[v]]
 
 
 with open("output.json", mode="w", encoding="utf-8") as f:
