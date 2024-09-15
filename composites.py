@@ -148,6 +148,35 @@ class REEsetSL(REsetSL):
         return total_length
 
 
+class REEEsetSL(REsetSL):
+    functions = (range, enumerate, enumerate, enumerate, set, str, len)
+
+    @staticmethod
+    def simulate(N):
+        if N == 0:
+            return 5
+
+        N = N - 1
+
+        outer_parentheses = 2
+        per_number_parentheses = 6 * (N + 1)
+        per_number_commas_spaces = 6 * (N + 1)
+        commas_and_spaces = max(0, (N) * 2)
+        digits = (RsetSL.calculate_digits(N)) * 4
+
+        # breakpoint()
+
+        total_length = (
+            digits
+            + outer_parentheses
+            + per_number_parentheses
+            + per_number_commas_spaces
+            + commas_and_spaces
+        )
+        return total_length
+
+
+
 def test_accuracy(composite, values):
     for N in values:
         simulated = composite.simulate(N)
@@ -162,3 +191,4 @@ if __name__ == "__main__":
     test_accuracy(RsetSL, list(range(10000)))
     test_accuracy(REsetSL, list(range(10000)))
     test_accuracy(REEsetSL, list(range(10000)))
+    test_accuracy(REEEsetSL, list(range(10000)))

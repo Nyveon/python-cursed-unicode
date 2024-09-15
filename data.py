@@ -3,7 +3,7 @@ import json
 import unicodedata
 from collections import deque, defaultdict
 
-from composites import RsetSL, Rsum, RrevIN, REsetSL, REEsetSL
+from composites import RsetSL, Rsum, RrevIN, REsetSL, REEsetSL, REEEsetSL
 
 start_time = time.time()
 
@@ -14,8 +14,10 @@ operations = {
     2: RrevIN,
     3: REsetSL,
     4: REEsetSL,
-    # (str, len), # not used
+    5: REEEsetSL
 }
+
+#
 
 operation_lengths = {}
 
@@ -168,13 +170,23 @@ result_dict = {
 }
 
 
+def path_to_binary(path):
+    if not path:
+        return ""
+
+    possible_values = operations.keys()
+    base = len(possible_values)
+    bnumber = int(path, base)
+
+    binary_representation = bin(bnumber)[2:]
+
+    # back to base 10
+    bnumber = str(int(binary_representation, 2))
+
+    return bnumber
+
+
 def output_json():
-    # for v in sorted(possible_values):
-    #     char = chr(int(v))
-    #     if unicodedata.name(char, False):
-    #         final_path = ikTranslator[operation_paths[v][0]]
-    #         final_path += "".join([str(x) for x in operation_paths[v][1:]])
-    #         result_dict["paths"][v] = final_path
     running = False
     run_flag = False
 
@@ -182,8 +194,10 @@ def output_json():
 
         if i in operation_paths and unicodedata.name(chr(int(i)), False):
             final_path = ikTranslator[operation_paths[i][0]]
+            # final_path += path_to_binary("".join([str(x) for x in operation_paths[i][1:]]))
             final_path += "".join([str(x) for x in operation_paths[i][1:]])
             result_dict["paths"].append(final_path)
+
             run_flag = False
             running = False
         else:
@@ -195,8 +209,6 @@ def output_json():
                 running = True
             else:
                 result_dict["paths"][-1] += 1
-
-
 
     with open("output.json", mode="w", encoding="utf-8") as f:
         json.dump(result_dict, f, separators=(',', ':'))
