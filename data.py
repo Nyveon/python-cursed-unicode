@@ -24,6 +24,7 @@ visited = {}
 
 queue = deque()
 
+
 def calculate_list_string_length(N):
     N = N - 1
     commas_and_spaces = max(0, (N) * 2)
@@ -186,7 +187,11 @@ result_dict = {
 for v in sorted(possible_values):
     char = chr(int(v))
     if unicodedata.name(char, False):
-        result_dict["paths"][v] = [str(x) for x in operation_paths[v]]
+        final_path = [
+            str(operation_paths[v][0]),
+            "".join([str(x) for x in operation_paths[v][1:]])
+        ]
+        result_dict["paths"][v] = final_path
 
 
 with open("output.json", mode="w", encoding="utf-8") as f:

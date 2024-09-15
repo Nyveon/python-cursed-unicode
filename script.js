@@ -32,8 +32,10 @@ function lookupUnicode(character) {
     const inner = unicodeData["initialKeys"][opcodes[0]];
     let result = inner;
 
-    for (let i = 1; i < opcodes.length; i++) {
-        const oplist = unicodeData["operations"][opcodes[i]];
+    const outer = opcodes[1].split('');
+
+    for (let i = 0; i < outer.length; i++) {
+        const oplist = unicodeData["operations"][outer[i]];
         for (let j = 0; j < oplist.length; j++) {
             result = `${oplist[j]}(${result})`
         }
