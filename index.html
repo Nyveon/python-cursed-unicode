@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Cursed Python Unicode Translator</title>
+
+		<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+		<link rel="stylesheet" href="style.css" />
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+		/>
+
+		<script
+			type="text/javascript"
+			src="https://cdn.jsdelivr.net/npm/toastify-js"
+		></script>
+		<script src="https://unpkg.com/feather-icons"></script>
+	</head>
+	<body>
+		<main>
+			<h1>Cursed Python Unicode</h1>
+			<p>Made out of only built-in unary functions! ඞ</p>
+
+			<input
+				type="text"
+				id="unicodeInput"
+				placeholder="Enter Unicode Character"
+				maxlength="2"
+			/>
+
+			<section id="resultSection">
+				<div class="flex-row">
+					<button title="Copiar resultado al portapapeles" id="copyButton">
+						<i data-feather="copy"></i>
+					</button>
+
+					<span id="result" class="result"></span>
+				</div>
+
+				<div class="code" id="resultScript"></div>
+			</section>
+		</main>
+
+		<script src="script.js"></script>
+
+		<script defer>
+			feather.replace();
+		</script>
+	</body>
+</html>
