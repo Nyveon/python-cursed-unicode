@@ -103,16 +103,49 @@ class REsetSL(RsetSL):
             return 5
 
         N = N - 1
-        
+
         outer_parentheses = 2
         per_number_parentheses = 2 * (N + 1)
         per_number_commas_spaces = 2 * (N + 1)
         commas_and_spaces = max(0, (N) * 2)
         digits = (RsetSL.calculate_digits(N)) * 2
 
-        total_length = digits + outer_parentheses + per_number_parentheses + per_number_commas_spaces + commas_and_spaces
+        total_length = (
+            digits
+            + outer_parentheses
+            + per_number_parentheses
+            + per_number_commas_spaces
+            + commas_and_spaces
+        )
         return total_length
 
+
+class REEsetSL(REsetSL):
+    functions = (range, enumerate, enumerate, set, str, len)
+
+    @staticmethod
+    def simulate(N):
+        if N == 0:
+            return 5
+
+        N = N - 1
+
+        outer_parentheses = 2
+        per_number_parentheses = 4 * (N + 1)
+        per_number_commas_spaces = 4 * (N + 1)
+        commas_and_spaces = max(0, (N) * 2)
+        digits = (RsetSL.calculate_digits(N)) * 3
+
+        # breakpoint()
+
+        total_length = (
+            digits
+            + outer_parentheses
+            + per_number_parentheses
+            + per_number_commas_spaces
+            + commas_and_spaces
+        )
+        return total_length
 
 
 def test_accuracy(composite, values):
@@ -124,8 +157,8 @@ def test_accuracy(composite, values):
 
 
 if __name__ == "__main__":
-    test_accuracy(RsetSL, list(range(10000)))
     test_accuracy(Rsum, list(range(10000)))
     test_accuracy(RrevIN, list(range(1, 10000)))
+    test_accuracy(RsetSL, list(range(10000)))
     test_accuracy(REsetSL, list(range(10000)))
-
+    test_accuracy(REEsetSL, list(range(10000)))

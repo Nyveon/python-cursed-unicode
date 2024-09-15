@@ -3,7 +3,7 @@ import json
 import unicodedata
 from collections import deque, defaultdict
 
-from composites import RsetSL, Rsum, RrevIN, REsetSL
+from composites import RsetSL, Rsum, RrevIN, REsetSL, REEsetSL
 
 start_time = time.time()
 
@@ -12,7 +12,8 @@ operations = {
     0: RsetSL,
     1: Rsum,
     2: RrevIN,
-    3: REsetSL
+    3: REsetSL,
+    4: REEsetSL,
     # (str, len), # not used
 }
 
