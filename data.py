@@ -178,7 +178,7 @@ def output_json():
 
 
     with open("output.json", mode="w", encoding="utf-8") as f:
-        json.dump(result_dict, f)
+        json.dump(result_dict, f, separators=(',', ':'))
 
 output_json()
 
