@@ -1,7 +1,9 @@
 import time
 import json
+import random
 import unicodedata
-from collections import deque
+import math
+from collections import deque, defaultdict
 
 start_time = time.time()
 
@@ -10,12 +12,20 @@ operations = {
     0: (range, set, str, len),
     1: (range, sum),
     2: (range, reversed, iter, next),
-    # 3: (range, enumerate, set, str, len),
+    3: (str, len), # not used
+    # 4: (range, enumerate, set, str, len),
 }
 
+operation_lengths = {}
+
+for operation in operations:
+    names = len(operations[operation])
+    name_lengths = sum([len(x.__name__) for x in operations[operation]])
+    operation_lengths[operation] = names * 2 + name_lengths
 
 possible_values = set()
 operation_paths = {}
+operation_path_lengths = defaultdict(int)
 
 max_value = 1_114_111
 max_depth = 24 # 24 is good
@@ -126,13 +136,15 @@ for k, v in candidates.items():
     candidates[k] = v[0]
 
 for i in candidates.keys():
-    queue.append((i, max_depth, [i]))
+    queue.append((i, max_depth, [i], len(candidates[i])))
 
 while queue:
-    value, depth, path = queue.popleft()
+    value, depth, path, path_length = queue.popleft()
 
     if depth == 0 or value > max_value:
         continue
+    # if depth == 0 or value > max_value * max_value:
+    #     continue
 
     if value in visited and visited[value] >= depth:
         continue
@@ -140,7 +152,8 @@ while queue:
 
     possible_values.add(value)
 
-    if value not in operation_paths or len(path) < len(operation_paths[value]):
+    if value not in operation_paths or path_length < operation_path_lengths[value]:
+        operation_path_lengths[value] = path_length
         operation_paths[value] = path[:]
 
     for ops in range(len(operations)):
@@ -149,12 +162,10 @@ while queue:
 
         if ops == 0:
             new_value = calculate_list_string_length(new_value)
-            new_path.append(ops)
             # for op in operations[ops]:
             #     new_path.append(op.__name__)
         elif ops == 1:
             new_value = calculate_range_sum(new_value)
-            new_path.append(ops)
             # for op in operations[ops]:
             #     new_path.append(op.__name__)
         elif ops == 2:
@@ -162,9 +173,13 @@ while queue:
                 continue
 
             new_value = new_value - 1
-            new_path.append(ops)
             # for op in operations[ops]:
             #     new_path.append(op.__name__)
+        elif ops == 3:
+            if new_value == 0:
+                new_value = 1
+            else:
+                new_value = math.floor(math.log10(new_value)) + 1
         else:
             print("here")
             for op in operations[ops]:
@@ -174,9 +189,10 @@ while queue:
                 except Exception as e:
                     print(e)
                     break
-            new_path.append(ops)
 
-        queue.append((new_value, depth - 1, new_path))
+        new_path.append(ops)
+        new_path_length = path_length + operation_lengths[ops]
+        queue.append((new_value, depth - 1, new_path, new_path_length))
 
 
 
@@ -198,15 +214,35 @@ result_dict = {
     "paths": {}
 }
 
-for v in sorted(possible_values):
-    char = chr(int(v))
-    if unicodedata.name(char, False):
-        final_path = ikTranslator[operation_paths[v][0]]
-        final_path += "".join([str(x) for x in operation_paths[v][1:]])
-        result_dict["paths"][v] = final_path
+# for v in sorted(possible_values):
+#     char = chr(int(v))
+#     if unicodedata.name(char, False):
+#         final_path = ikTranslator[operation_paths[v][0]]
+#         final_path += "".join([str(x) for x in operation_paths[v][1:]])
+#         result_dict["paths"][v] = final_path
 
 
-with open("output.json", mode="w", encoding="utf-8") as f:
-    json.dump(result_dict, f)
+# with open("output.json", mode="w", encoding="utf-8") as f:
+#     json.dump(result_dict, f)
+
+counter = {
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0
+}
+
+with open("testoutput.txt", mode="w", encoding="utf-8") as f:
+    for v in sorted(possible_values):
+        if v > max_value:
+            continue
+
+        char = chr(int(v))
+        if unicodedata.name(char, False):
+            for x in operation_paths[v][1:]:
+                counter[x] += 1
+
+print(counter)
+
 
 print("Time taken: ", time.time() - start_time)
