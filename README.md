@@ -10,7 +10,7 @@ Specifically uses only 0-arity functions as starting points and then a chain of 
 
 ## Inspiration
 
-Inspired by this viral meme:
+Inspired by this viral meme (from [this tweet](https://twitter.com/chordbug/status/1834642829919781369)):
 
 ```python
 chr(sum(range(ord(min(str(not()))))))
