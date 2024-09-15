@@ -14,7 +14,7 @@ async function loadJSON() {
 
 		const json = await response.json();
 
-        unicodeData = json;
+		unicodeData = json;
 	} catch (error) {
 		document.getElementById("result").textContent =
 			"Error loading JSON: " + error.message;
@@ -35,43 +35,48 @@ document.getElementById("unicodeInput").addEventListener("input", function () {
 	const character = this.value.trim();
 	const resultElement = document.getElementById("result");
 	const resultScript = document.getElementById("resultScript");
-    const resultSection = document.getElementById("resultSection");
+	const resultSection = document.getElementById("resultSection");
 
 	if (character) {
 		const script = lookupUnicode(character);
-		resultElement.textContent = `"${String.fromCodePoint(character.codePointAt(0))}":`;
+		resultElement.textContent = `"${String.fromCodePoint(
+			character.codePointAt(0)
+		)}":`;
 		resultScript.textContent = script;
 		resultScript.style.display = "block";
-        resultSection.style.display = "block";
+		resultSection.style.display = "block";
 	} else {
 		resultElement.textContent = "";
 		resultScript.textContent = "";
 		resultScript.style.display = "none";
-        resultSection.style.display = "none";
+		resultSection.style.display = "none";
 	}
 });
 
 function warningToast(message) {
-    Toastify({
-        text: message,
-        duration: 3000,
-        className: 'toast-warning'
-    }).showToast();
+	Toastify({
+		text: message,
+		duration: 3000,
+		className: "toast-warning",
+	}).showToast();
 }
 function successToast(message) {
-    Toastify({
-        text: message,
-        duration: 3000,
-        className: 'toast-success'
-    }).showToast();
+	Toastify({
+		text: message,
+		duration: 3000,
+		className: "toast-success",
+	}).showToast();
 }
 
 document.getElementById("copyButton").addEventListener("click", function () {
-    const textToCopy = document.querySelector('#resultScript').innerText;
-    
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        successToast('Copied to clipboard');
-    }).catch(err => {
-        warningToast('Error copying to clipboard');
-    });
+	const textToCopy = document.querySelector("#resultScript").innerText;
+
+	navigator.clipboard
+		.writeText(textToCopy)
+		.then(() => {
+			successToast("Copied to clipboard");
+		})
+		.catch((err) => {
+			warningToast("Error copying to clipboard");
+		});
 });
