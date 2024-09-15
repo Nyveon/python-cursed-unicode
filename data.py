@@ -178,8 +178,22 @@ while queue:
 
         queue.append((new_value, depth - 1, new_path))
 
+
+
+keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+
+if (len(keys) < len(candidates.keys())):
+    print("Not enough keys!")
+
+ikTranslator = {}
+i = 0
+for k in sorted(candidates.keys()):
+    ikTranslator[k] = keys[i]
+    i += 1
+
+
 result_dict = {
-    "initialKeys": candidates,
+    "initialKeys": {ikTranslator[key]: value for key, value in candidates.items()},
     "operations": {key: [v.__name__ for v in value] for key, value in operations.items()},
     "paths": {}
 }
@@ -187,10 +201,8 @@ result_dict = {
 for v in sorted(possible_values):
     char = chr(int(v))
     if unicodedata.name(char, False):
-        final_path = [
-            str(operation_paths[v][0]),
-            "".join([str(x) for x in operation_paths[v][1:]])
-        ]
+        final_path = ikTranslator[operation_paths[v][0]]
+        final_path += "".join([str(x) for x in operation_paths[v][1:]])
         result_dict["paths"][v] = final_path
 
 

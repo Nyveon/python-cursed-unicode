@@ -29,10 +29,11 @@ function lookupUnicode(character) {
         return "Character not found.";
     }
 
-    const inner = unicodeData["initialKeys"][opcodes[0]];
+    const inner = unicodeData["initialKeys"][opcodes.charAt(0)];
     let result = inner;
 
-    const outer = opcodes[1].split('');
+    const outer = opcodes.split('');
+    outer.shift();
 
     for (let i = 0; i < outer.length; i++) {
         const oplist = unicodeData["operations"][outer[i]];
