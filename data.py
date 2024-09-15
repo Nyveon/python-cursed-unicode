@@ -5,61 +5,35 @@ import unicodedata
 import math
 from collections import deque, defaultdict
 
+from composites import RsetSL, Rsum, RrevIN
+
 start_time = time.time()
 
 
 operations = {
-    0: (range, set, str, len),
-    1: (range, sum),
-    2: (range, reversed, iter, next),
-    3: (str, len), # not used
+    0: RsetSL,
+    1: Rsum,
+    2: RrevIN,
+    # 3: (str, len), # not used
     # 4: (range, enumerate, set, str, len),
 }
 
 operation_lengths = {}
 
 for operation in operations:
-    names = len(operations[operation])
-    name_lengths = sum([len(x.__name__) for x in operations[operation]])
-    operation_lengths[operation] = names * 2 + name_lengths
+    operation_lengths[operation] = operations[operation].get_string_length()
 
 possible_values = set()
 operation_paths = {}
 operation_path_lengths = defaultdict(int)
 
 max_value = 1_114_111
-max_depth = 24 # 24 is good
+max_depth = 24  # 24 is good
 
 visited = {}
 
 queue = deque()
 
-
-def calculate_list_string_length(N):
-    N = N - 1
-    commas_and_spaces = max(0, (N) * 2)
-    parentheses = 2
-
-    digits = 0
-    start = 1
-    num_digits = 1
-
-    while start <= N:
-        end = min(N, 10**num_digits - 1)
-        count = end - start + 1
-        digits += count * num_digits
-        start *= 10
-        num_digits += 1
-
-    digits += 1  # (0)
-
-    total_length = commas_and_spaces + parentheses + digits
-    return total_length
-
-
-def calculate_range_sum(N):
-    N -= 1
-    return (N * (N + 1)) // 2
 
 candidates = {
     78: ["ord(min(str(print())))"],
@@ -152,7 +126,10 @@ while queue:
 
     possible_values.add(value)
 
-    if value not in operation_paths or path_length < operation_path_lengths[value]:
+    if (
+        value not in operation_paths
+        or path_length < operation_path_lengths[value]
+    ):
         operation_path_lengths[value] = path_length
         operation_paths[value] = path[:]
 
@@ -160,45 +137,19 @@ while queue:
         new_value = value
         new_path = path[:]
 
-        if ops == 0:
-            new_value = calculate_list_string_length(new_value)
-            # for op in operations[ops]:
-            #     new_path.append(op.__name__)
-        elif ops == 1:
-            new_value = calculate_range_sum(new_value)
-            # for op in operations[ops]:
-            #     new_path.append(op.__name__)
-        elif ops == 2:
-            if new_value == 0:
-                continue
+        if not operations[ops].guard(new_value):
+            continue
 
-            new_value = new_value - 1
-            # for op in operations[ops]:
-            #     new_path.append(op.__name__)
-        elif ops == 3:
-            if new_value == 0:
-                new_value = 1
-            else:
-                new_value = math.floor(math.log10(new_value)) + 1
-        else:
-            print("here")
-            for op in operations[ops]:
-                try:
-                    new_value = op(new_value)
-                    # new_path.append(op.__name__)
-                except Exception as e:
-                    print(e)
-                    break
+        new_value = operations[ops].simulate(new_value)
 
         new_path.append(ops)
         new_path_length = path_length + operation_lengths[ops]
         queue.append((new_value, depth - 1, new_path, new_path_length))
 
 
-
 keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 
-if (len(keys) < len(candidates.keys())):
+if len(keys) < len(candidates.keys()):
     print("Not enough keys!")
 
 ikTranslator = {}
@@ -209,9 +160,13 @@ for k in sorted(candidates.keys()):
 
 
 result_dict = {
-    "initialKeys": {ikTranslator[key]: value for key, value in candidates.items()},
-    "operations": {key: [v.__name__ for v in value] for key, value in operations.items()},
-    "paths": {}
+    "initialKeys": {
+        ikTranslator[key]: value for key, value in candidates.items()
+    },
+    "operations": {
+        key: [v.__name__ for v in value.functions] for key, value in operations.items()
+    },
+    "paths": {},
 }
 
 # for v in sorted(possible_values):
@@ -225,12 +180,7 @@ result_dict = {
 # with open("output.json", mode="w", encoding="utf-8") as f:
 #     json.dump(result_dict, f)
 
-counter = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0
-}
+counter = {0: 0, 1: 0, 2: 0, 3: 0}
 
 with open("testoutput.txt", mode="w", encoding="utf-8") as f:
     for v in sorted(possible_values):

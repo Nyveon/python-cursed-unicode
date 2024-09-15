@@ -1,3 +1,9 @@
-import math
-print(len(str(5698745689)))
-print(math.floor(math.log10(5698745689)))
+from composites import RsetSL
+
+
+def test_string_lengths(composite, values):
+    for N in values:
+        assert composite.simulate(N) == composite.real(N)
+    
+
+test_string_lengths()
